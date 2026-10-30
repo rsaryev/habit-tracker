@@ -1,7 +1,7 @@
 # Habit Tracker: checked on every push and pull request; a tag v<version> (the version in
-# mini-app.json) releases it. People add
-#   https://github.com/<owner>/<repo>/releases/latest/download/mini-app-catalog.json
-# in Localix's mini app store. Written by `mini-app ci`; run it again after updating Localix.
+# .localix-mini-app/mini-app.json) releases it as a mini app marketplace. People add <owner>/<repo>
+# in Localix: Store → Sources → Add source. Written by `mini-app ci`; run it again after
+# updating Localix.
 name: Mini app
 
 on:
@@ -14,8 +14,8 @@ permissions:
   contents: write
 
 env:
-  # The Localix this app is built against: the kit of its release v0.1.0-beta.20.
-  MINI_APP_KIT_RELEASES: https://github.com/rsaryev/localix/releases/download/v0.1.0-beta.20
+  # The Localix this app is built against: the kit of its release v0.1.0-beta.21.
+  MINI_APP_KIT_RELEASES: https://github.com/rsaryev/localix/releases/download/v0.1.0-beta.21
 
 jobs:
   build:
@@ -35,31 +35,31 @@ jobs:
       - name: Check
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         run: localix/plugins/mini-app-authoring/bin/mini-app check app
-      - name: The tag is the version in mini-app.json
+      - name: The tag is the version in its manifest
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: |
-          version=$(bun -e "process.stdout.write((await Bun.file('app/mini-app.json').json()).version)")
+          version=$(bun -e "process.stdout.write((await Bun.file('app/.localix-mini-app/mini-app.json').json()).version)")
           if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "::error::The tag $GITHUB_REF_NAME is not v$version, the version in mini-app.json: tag v$version, or raise the version first."
+            echo "::error::The tag $GITHUB_REF_NAME is not v$version, the version in .localix-mini-app/mini-app.json: tag v$version, or raise the version first."
             exit 1
           fi
       - name: Check and pack
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        run: localix/plugins/mini-app-authoring/bin/mini-app pack app --out catalog
-      # Localix updates the app on its own only from a signed catalog: `mini-app keygen`, then
+        run: localix/plugins/mini-app-authoring/bin/mini-app pack app --out marketplace
+      # Localix updates the app on its own only from a signed marketplace: `mini-app keygen`, then
       # `gh secret set MINI_APP_SIGNING_KEY` with the key it made. Without it the release is unsigned.
-      - name: Sign the catalog
+      - name: Sign the marketplace
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           MINI_APP_SIGNING_KEY: ${{ secrets.MINI_APP_SIGNING_KEY }}
         run: |
           if [ -z "$MINI_APP_SIGNING_KEY" ]; then
-            echo "::notice::The catalog is not signed: Localix updates this app only when people choose Update. Run mini-app keygen and set the MINI_APP_SIGNING_KEY secret to sign it."
+            echo "::notice::The marketplace is not signed: Localix updates this app only when people choose Update. Run mini-app keygen and set the MINI_APP_SIGNING_KEY secret to sign it."
           else
-            localix/plugins/mini-app-authoring/bin/mini-app sign catalog
+            localix/plugins/mini-app-authoring/bin/mini-app sign marketplace
           fi
       - name: Release
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" catalog/* --repo "$GITHUB_REPOSITORY" --title "Habit Tracker $GITHUB_REF_NAME" --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" marketplace/* --repo "$GITHUB_REPOSITORY" --title "Habit Tracker $GITHUB_REF_NAME" --generate-notes

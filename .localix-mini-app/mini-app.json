@@ -1,7 +1,7 @@
 {
   "name": "habit-tracker",
   "displayName": "Habit Tracker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Track daily habits in categories of your own, from a screen or the chat.",
   "license": "MIT",
   "apiVersion": 2,

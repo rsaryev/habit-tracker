@@ -49,6 +49,6 @@ app. The plumbing between them — routes, storage, live updates — is the SDK'
 
 `mini-app check` runs every check; `mini-app build` also packages it into `dist/package/`, and
 `mini-app install` puts that package into a running Localix, which swaps it in place.
-`mini-app pack` makes a catalog to share it.
+`mini-app pack` makes a marketplace to share it.
 
 MIT licensed.

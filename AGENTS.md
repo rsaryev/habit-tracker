@@ -46,7 +46,7 @@ The app layer — every name below is exported by the SDK the check types agains
   AND where things stand (today's total, what is left), so the agent can tell the person in one
   line; return { content, isError: true } only when the input was wrong and nothing happened. Give
   the agent a tool for everything the person can do on the screen.
-- Settings the person changes: "config" in mini-app.json ({ "DAILY_GOAL": { "type": "string",
+- Settings the person changes: "config" in .localix-mini-app/mini-app.json ({ "DAILY_GOAL": { "type": "string",
   "title", "description", "default": "2000" } }); the backend reads ctx.config.DAILY_GOAL, parsed
   with a fallback, and the screen reads it through a small route.
 - ui/App.tsx — export function App({ active, publishMessageContext }: ScreenProps). const meals =
@@ -126,8 +126,8 @@ matters, then its breakdown, then the items.
 
 House rules:
 
-- The entries keep their path and export: mini-app.json, guide.md, icon.svg, backend/index.ts,
-  ui/register.tsx. `mini-app.json` names the app, its settings (`config`) and its backend
+- The entries keep their path and export: .localix-mini-app/mini-app.json, guide.md, icon.svg, backend/index.ts,
+  ui/register.tsx. `.localix-mini-app/mini-app.json` names the app, its settings (`config`) and its backend
   (`./backend/index.ts`; the package's copy names its bundle under `dist/backend/`). `guide.md`
   tells the agent which tool does what and what to tell the person. A mini app holds no Claude Code
   plugin — no `skills/`, `.claude-plugin/` or hooks.
