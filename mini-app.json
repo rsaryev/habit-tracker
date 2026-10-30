@@ -1,0 +1,15 @@
+{
+  "name": "habit-tracker",
+  "displayName": "Habit Tracker",
+  "version": "1.0.0",
+  "description": "Track daily habits in categories of your own, from a screen or the chat.",
+  "license": "MIT",
+  "apiVersion": 2,
+  "category": "utilities",
+  "tags": ["habits", "daily", "tracker", "categories"],
+  "icon": "./icon.svg",
+  "surfaces": ["agent", "workbench"],
+  "backend": "./backend/index.ts",
+  "author": "rsaryev",
+  "repository": "https://github.com/rsaryev/habit-tracker"
+}
